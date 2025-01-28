@@ -2,6 +2,7 @@
 const express = require('express');
 const Specialization = require('../models/specialization');
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken');
 
 // Add Specialization
 router.post('/add', async (req, res) => {
@@ -16,7 +17,7 @@ router.post('/add', async (req, res) => {
 });
 
 // Get Specializations
-router.get('/list', async (req, res) => {
+router.get('/list',  async (req, res) => {
     try {
         const specializations = await Specialization.find();
         res.status(200).json(specializations);
@@ -25,8 +26,8 @@ router.get('/list', async (req, res) => {
     }
 });
 
-// DELETE user
-router.delete('/:id', verifyToken, async (req, res) => {
+// DELETE 
+router.delete('/specializationName',  async (req, res) => {
     try {
         const user = await User.findByIdAndDelete(req.params.id);
         if (!user) return res.status(404).json({ message: "User not found" });
@@ -36,8 +37,8 @@ router.delete('/:id', verifyToken, async (req, res) => {
     }
 });
 
-// UPDATE user
-router.put('/:id', verifyToken, async (req, res) => {
+// UPDATE 
+router.put('/specializationName', async (req, res) => {
     try {
         const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!updatedUser) return res.status(404).json({ message: "User not found" });
@@ -47,22 +48,6 @@ router.put('/:id', verifyToken, async (req, res) => {
     }
 });
 
-// CHANGE password
-router.patch('/:id/password', verifyToken, async (req, res) => {
-    const { password } = req.body;
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) return res.status(404).json({ message: "User not found" });
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        user.password = hashedPassword;
-        await user.save();
-
-        res.json({ message: "Password updated successfully" });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
 
 
 module.exports = router;

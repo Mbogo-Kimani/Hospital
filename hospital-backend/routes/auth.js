@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken');
+
 
 // Register
 router.post('/register', async (req, res) => {
@@ -36,6 +38,22 @@ router.post('/login', async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+// routes/auth.js
+router.get('/list', async (req, res) => {
+    console.log('Request received to list users');
+    try {
+        console.time('User.find'); // Log query duration
+        const users = await User.find(); // Use the `User` model to fetch users
+        console.timeEnd('User.find');
+        console.log('Users retrieved successfully');
+        res.status(200).json(users); // Return `users` data
+    } catch (error) {
+        console.error('Error fetching users:', error.message);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 // DELETE user
 router.delete('/:id', verifyToken, async (req, res) => {

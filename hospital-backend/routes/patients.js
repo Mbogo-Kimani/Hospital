@@ -2,12 +2,13 @@
 const express = require('express');
 const Patient = require('../models/patient');
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken');
 
 // Add Patient
 router.post('/add', async (req, res) => {
-    const { name, status, dateVisited, admissionDetails, diagnosis } = req.body;
+    const { id, name, age, status, dateVisited, admissionDetails, diagnosis } = req.body;
     try {
-        const patient = new Patient({ name, age, status, dateVisited, admissionDetails, diagnosis });
+        const patient = new Patient({ id, name, age, status, dateVisited, admissionDetails, diagnosis });
         await patient.save();
         res.status(201).json({ message: 'Patient added successfully' });
     } catch (error) {
